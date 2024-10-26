@@ -28,13 +28,17 @@ $c_{psafe}$: the perceived safety threshold (Level 4 is recommended);
 $cd_{m(q)}$: the distance threshold of mode \(m).
 
 **The [MATSim Psafe Module](https://github.com/panogjuras/Psafe) repository contains:**
-- [Psafe package](https://github.com/panogjuras/Psafe/src/main/java/org/matsim/contrib/Psafe): includes all the classes to extend the MATSim scoring so that perceived safety is considered
-- [ScenarioAthens run package](https://github.com/panogjuras/Psafe/src/main/java/org/matsim/contrib/scenarioAthens/run): contains the public class to run simulation experiments using the ScenarioAthens
-- [ScenarioAthens](https://github.com/panogjuras/Psafe/resources/bicycle_example): some toy scenarios developed for the city center of Athens for further experimentation
+- [Psafe package](https://github.com/panogjuras/Psafe/src/main/java/org/matsim/contrib/Psafe): includes all the classes to extend the MATSim scoring so that perceived safety is considered.
+- [ScenarioAthens run package](https://github.com/panogjuras/Psafe/src/main/java/org/matsim/contrib/scenarioAthens/run): contains the public class to run simulation experiments using the ScenarioAthens.
+- [ScenarioAthens](https://github.com/panogjuras/Psafe/resources/bicycle_example): some toy scenarios developed for the city center of Athens for further experimentation.
+
+The Module can be utilized for research and education purposes. A Getting Started document will be prepared soon.
 
 It is Maven project; all dependencies are included in the (pom)[pom.xml] file. MATSim is a major dependency that should be installed.
 
 The tools contained in this repository were developed within various research project of [Laboratory of Transportation Engineering](http://lte.survey.ntua.gr/main/en/) of National Technical University of Athens.
 
-The model was firstly presented in the following publication:
-- Tzouras, P.G., Mitropoulos, L., Karolemeas, C., Stravropoulou, E., Vlahogianni, E.I., Kepaptsoglou, K., 2024. Agent-based simulation model of micro-mobility trips in heterogeneous and perceived unsafe road environments. Journal of Cycling and Micromobility Research 2, 100042. [https://doi.org/10.1016/j.jcmr.2024.100042]
+When referencing the contrib, please use the following papers:
+> Tzouras, P.G., Mitropoulos, L., Karolemeas, C., Stravropoulou, E., Vlahogianni, E.I., Kepaptsoglou, K., 2024. Agent-based simulation model of micro-mobility trips in heterogeneous and perceived unsafe road environments. Journal of Cycling and Micromobility Research 2, 100042. [https://doi.org/10.1016/j.jcmr.2024.100042]
+
+More publication are coming.

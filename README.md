@@ -2,7 +2,11 @@
 
 The Psafe Module extends the scoring function of [MATSim](https://github.com/matsim-org) so that perceived safety rates are considered. As can be seen in Equation below, travel disutility now depends on time, distance (i.e., cost), and safety. The beta coefficient ($\beta_{psafe,m\left(q\right)$) represents the overall weight of safety perceptions in the plan selection process, influencing mode or route choice. To incorporate perceived safety, a threshold level is established, where safety ratings below the threshold decrease trip utility and vice versa. Perceived safety values are then multiplied by the ratio of the distance of each link to the distance threshold (${cd}_{m\left(q\right)}$ parameter). The parameter represents the level of unsafe distance a road user is willing to tolerate during a short trip. This is closely linked to the user’s experience, familiarity with, and tolerance for minor unsafe gaps that may arise along their route. A lower distance threshold indicates a higher contribution of perceived safety to the overall utility of a specific transport mode. The Psafe module also enables the use of a variable distance threshold rather than a fixed one. It assesses the impact of perceived safety by applying a distance-weighted average. In this approach, the distance threshold corresponds to the total length of each trip.
 
-$S_{trav,m(q)} = \left[ C_{m(q)} + \beta_{trav,m(q)} \times t_{trav,m(q)} + \beta_{mon} \times \Delta m_q + \left(\frac{\beta_{d,m(q)}}{\gamma_{d,m(q)} + \beta_{mon}}\right) \times d_{trav,q} \right] + \beta_{psafe,m(q)} \times \sum_i \left[ \frac{(psafe_{i,m} - c_{psafe}) \times d_{trav,i}}{cd_{m(q)}} \right]$
+$$
+S_{trav,m(q)} = \left[ C_{m(q)} + \beta_{trav,m(q)} \times t_{trav,m(q)} + \beta_{mon} \times \Delta m_q \right. <br>
+\quad \left. + \left(\frac{\beta_{d,m(q)}}{\gamma_{d,m(q)} + \beta_{mon}}\right) \times d_{trav,q} \right] <br>
+\quad + \beta_{psafe,m(q)} \times \sum_i \left[ \frac{(psafe_{i,m} - c_{psafe}) \times d_{trav,i}}{cd_{m(q)}} \right]
+$$
 
 $S_{trav,m(q)}$: sum of all travel (dis)utilities of trip \(q) (e.g., travel time, cost, distance, etc.);  
 $C_{m(q)}$: mode specific constant of mode \(m);  

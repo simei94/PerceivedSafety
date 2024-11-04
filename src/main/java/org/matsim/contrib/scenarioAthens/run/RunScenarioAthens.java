@@ -74,8 +74,8 @@ public class RunScenarioAthens {
 			
 			fillConfigWithBicycleStandardValues(config);
 
-			config.network().setInputFile("sim4mtran_psafest_scenario_0_ATHENS.xml"); // Modify this
-			config.plans().setInputFile("attacked_network_1.xml");
+			config.network().setInputFile("attacked_network_1.xml"); // Modify this
+			config.plans().setInputFile("cropped_plans_4.xml");
 		
 		} else {
 			throw new RuntimeException("More than one argument was provided. There is no procedure for this situation. Thus aborting!"

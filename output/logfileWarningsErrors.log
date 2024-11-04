@@ -1,0 +1,47 @@
+2024-10-26T21:28:33,919  WARN PrepareForSimImpl:268 'usePersonIdForMissingVehicleId' is deprecated. It will be removed soon.
+2024-10-26T21:28:34,021  WARN RandomizingTimeDistanceTravelDisutilityFactory:113 There will be no routing randomness. The randomization of the travel disutility requires the monetary distance rate to be different than zero. Continuing anyway.
+2024-10-26T21:28:34,135  WARN CoordUtils:328 Mix of 2D / 3D coordinates. Assuming 2D only.
+ This message given only once.
+2024-10-26T21:28:34,157  WARN SpeedyALT:159 No route was found from node 70000 to node 10000. Some possible reasons:
+2024-10-26T21:28:34,158  WARN SpeedyALT:160   * Network is not connected.  Run NetworkCleaner().
+2024-10-26T21:28:34,158  WARN SpeedyALT:161   * Network for considered mode does not even exist.  Modes need to be entered for each link in network.xml.
+2024-10-26T21:28:34,158  WARN SpeedyALT:162   * Network for considered mode is not connected to starting or ending point of route.  Setting insertingAccessEgressWalk to true may help.
+2024-10-26T21:28:34,158  WARN SpeedyALT:163 This will now return null, but it may fail later with a NullPointerException.
+2024-10-26T21:28:34,159 ERROR ParallelPersonAlgorithmUtils$ExceptionHandler:165 Thread PersonPrepareForSim.0 died with exception while handling events.
+java.lang.RuntimeException: No route found from node 70000 to node 10000 by mode car.
+	at org.matsim.core.router.NetworkRoutingModule.calcRoute(NetworkRoutingModule.java:107) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.router.TripRouter.calcRoute(TripRouter.java:180) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.router.PlanRouter.run(PlanRouter.java:95) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.population.algorithms.PersonPrepareForSim.run(PersonPrepareForSim.java:234) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.population.algorithms.ParallelPersonAlgorithmUtils$PersonAlgoThread.run(ParallelPersonAlgorithmUtils.java:146) ~[matsim-2024.0.jar:?]
+	at java.base/java.lang.Thread.run(Thread.java:1583) [?:?]
+2024-10-26T21:28:34,180 ERROR MatsimRuntimeModifications:76 Getting uncaught Exception in Thread main
+java.lang.RuntimeException: Exception while processing persons. Cannot guarantee that all persons have been fully processed.
+	at org.matsim.core.population.algorithms.ParallelPersonAlgorithmUtils.run(ParallelPersonAlgorithmUtils.java:121) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.PrepareForSimImpl.run(PrepareForSimImpl.java:196) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.NewControler.prepareForSim(NewControler.java:114) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.AbstractController$1.run(AbstractController.java:83) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.MatsimRuntimeModifications.run(MatsimRuntimeModifications.java:70) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.MatsimRuntimeModifications.run(MatsimRuntimeModifications.java:53) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.AbstractController.run(AbstractController.java:92) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.NewControler.run(NewControler.java:83) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.Controler.run(Controler.java:259) [matsim-2024.0.jar:?]
+	at org.matsim.contrib.scenarioAthens.run.RunScenarioAthens.run(RunScenarioAthens.java:202) [classes/:?]
+	at org.matsim.contrib.scenarioAthens.run.RunScenarioAthens.main(RunScenarioAthens.java:88) [classes/:?]
+2024-10-26T21:28:34,181 ERROR MatsimRuntimeModifications:82 ERROR --- This is an unexpected shutdown!
+2024-10-26T21:28:34,181 ERROR MatsimRuntimeModifications:85 Shutdown possibly caused by the following Exception:
+java.lang.RuntimeException: Exception while processing persons. Cannot guarantee that all persons have been fully processed.
+	at org.matsim.core.population.algorithms.ParallelPersonAlgorithmUtils.run(ParallelPersonAlgorithmUtils.java:121) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.PrepareForSimImpl.run(PrepareForSimImpl.java:196) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.NewControler.prepareForSim(NewControler.java:114) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.AbstractController$1.run(AbstractController.java:83) ~[matsim-2024.0.jar:?]
+	at org.matsim.core.controler.MatsimRuntimeModifications.run(MatsimRuntimeModifications.java:70) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.MatsimRuntimeModifications.run(MatsimRuntimeModifications.java:53) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.AbstractController.run(AbstractController.java:92) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.NewControler.run(NewControler.java:83) [matsim-2024.0.jar:?]
+	at org.matsim.core.controler.Controler.run(Controler.java:259) [matsim-2024.0.jar:?]
+	at org.matsim.contrib.scenarioAthens.run.RunScenarioAthens.run(RunScenarioAthens.java:202) [classes/:?]
+	at org.matsim.contrib.scenarioAthens.run.RunScenarioAthens.main(RunScenarioAthens.java:88) [classes/:?]
+2024-10-26T21:28:34,312 ERROR MatsimRuntimeModifications:100 ERROR --- MATSim unexpectedly terminated. Please check the output or the logfile with warnings and errors for hints.
+2024-10-26T21:28:34,312 ERROR MatsimRuntimeModifications:101 ERROR --- results should not be used for further analysis.
+2024-10-26T21:28:34,312 ERROR MatsimRuntimeModifications:105 ERROR --- This was an unexpected shutdown! See the log file for a possible reason.

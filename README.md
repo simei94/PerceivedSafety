@@ -41,4 +41,3 @@ The tools contained in this repository were developed within various research pr
 When referencing the contrib, please use the following papers:
 > Tzouras, P.G., Mitropoulos, L., Karolemeas, C., Stravropoulou, E., Vlahogianni, E.I., Kepaptsoglou, K., 2024. Agent-based simulation model of micro-mobility trips in heterogeneous and perceived unsafe road environments. Journal of Cycling and Micromobility Research 2, 100042. [https://doi.org/10.1016/j.jcmr.2024.100042]
 
-More publication are coming.

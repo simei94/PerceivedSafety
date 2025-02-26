@@ -1,6 +1,6 @@
 # The MATSim Psafe Module
 
-The Psafe Module extends the scoring function of [MATSim](https://github.com/matsim-org) so that perceived safety rates are considered. As can be seen in Equation below, travel disutility now depends on time, distance (i.e., cost), and safety. The beta coefficient ($\beta_{psafe,m(q)}$ parameter) represents the overall weight of safety perceptions in the plan selection process, influencing mode or route choice. It is inspired by [Bicycle](https://github.com/matsim-org/matsim-libs/tree/master/contribs/bicycle) contribution. 
+The Psafe Module extends the scoring function of [MATSim](https://github.com/matsim-org) so that perceived safety rates are considered. As can be seen in Equation below, travel disutility now depends on time, distance (i.e., cost), and safety. The beta coefficient ($\beta_{psafe,m(q)}$ parameter) represents the overall weight of safety perceptions in the plan selection process, influencing mode or route choice. It is inspired by [Bicycle](https://github.com/matsim-org/matsim-libs/tree/master/contribs/bicycle) contribution aiming to bring out an updated version. 
 
 Perceived safety is an attribute of the links incuded in the network. The calculation of scores can be performed based on the tools uploaded in Perceived_Safety_Choices repository (a new version will be online again).
 

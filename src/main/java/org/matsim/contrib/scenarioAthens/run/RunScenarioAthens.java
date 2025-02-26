@@ -2,7 +2,7 @@
 * project: org.matsim.*
 * *********************************************************************** *
 *                                                                         *
-* copyright       : (C) ${2024} by the members listed in the COPYING,        *
+* copyright       : (C) ${2024} by the members listed in the COPYING,     *
 *                   LICENSE and WARRANTY file.                            *
 * email           : info at matsim dot org                                *
 *                                                                         *
@@ -24,15 +24,11 @@ import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 
-// import org.matsim.contrib.bicycle.BicycleConfigGroup; // change the packages here
-// import org.matsim.contrib.bicycle.BicycleModule;
-// import org.matsim.contrib.bicycle.PsafeModule;
-// import org.matsim.contrib.bicycle.Bicycles;
-
 //// new modules, new modules... PsafeChoices package.
 import org.matsim.contrib.Psafe.PsafeConfigGroup;
 // import org.matsim.contrib.Psafe.PsafeInput;
 // import org.matsim.contrib.Psafe.PsafeNewAttrib;
+import org.matsim.contrib.Psafe.PsafeModule;
 
 import org.matsim.core.config.groups.ReplanningConfigGroup.StrategySettings;
 import org.matsim.core.config.Config;
@@ -40,8 +36,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.core.config.groups.ScoringConfigGroup.ActivityParams;
 import org.matsim.core.config.groups.ScoringConfigGroup.ModeParams;
 import org.matsim.core.config.groups.QSimConfigGroup;
-//import org.matsim.core.config.groups.StrategyConfigGroup.StrategySettings;
-// import org.matsim.core.controler.AllowsConfiguration;
+
 import org.matsim.core.controler.Controler;
 import org.matsim.core.controler.OutputDirectoryHierarchy.OverwriteFileSetting;
 import org.matsim.core.scenario.ScenarioUtils;
@@ -67,47 +62,28 @@ public class RunScenarioAthens {
 			fillConfigWithBicycleStandardValues(config);
 		} else if (args.length == 0) {
 			LOG.info("No config.xml file was provided. Using 'standard' example files given in this contrib's resources folder.");
-			// Setting the context like this works when the data is stored under "/matsim/contribs/bicycle/src/main/resources/bicycle_example"
-			config = ConfigUtils.createConfig("ScenarioAthens/");
-			// config.addModule(new BicycleConfigGroup());
+
+			config = ConfigUtils.createConfig("ScenarioAthensEquity/");
+
 			config.addModule(new PsafeConfigGroup());
 			
 			fillConfigWithBicycleStandardValues(config);
 
-			config.network().setInputFile("attacked_network_1.xml"); // Modify this
-			config.plans().setInputFile("cropped_plans_4.xml");
+			config.network().setInputFile("network_psafest_scenario00.xml"); // Modify this
+			config.plans().setInputFile("cropped_plans.xml");
 		
 		} else {
 			throw new RuntimeException("More than one argument was provided. There is no procedure for this situation. Thus aborting!"
 								     + " Provide either (1) only a suitable config file or (2) no argument at all to run example with given example of resources folder.");
 		}
-		config.controller().setLastIteration(500); // Modify if motorized interaction is used
+		config.controller().setLastIteration(500);
 		
-		// boolean considerMotorizedInteraction = false;
-
 		new RunScenarioAthens().run(config);
 	}
 
 	static void fillConfigWithBicycleStandardValues(Config config) {
 		config.controller().setWriteEventsInterval(1);
 
-		// BicycleConfigGroup bicycleConfigGroup = ConfigUtils.addOrGetModule( config, BicycleConfigGroup.class );
-		// bicycleConfigGroup.setMarginalUtilityOfInfrastructure_m(-0.0002);
-		// bicycleConfigGroup.setMarginalUtilityOfComfort_m(-0.0002);
-		// bicycleConfigGroup.setMarginalUtilityOfGradient_m_100m(-0.02);
-		// bicycleConfigGroup.setMarginalUtilityOfUserDefinedNetworkAttribute_m(-0.0000); // always needs to be negative
-		// bicycleConfigGroup.setUserDefinedNetworkAttributeName("quietness"); // needs to be defined as a value from 0 to 1, 1 being best, 0 being worst
-		// bicycleConfigGroup.setUserDefinedNetworkAttributeDefaultValue(0.1); // used for those links that do not have a value for the user-defined attribute
-
-		// bicycleConfigGroup.setMaxBicycleSpeedForRouting(4.16666666);
-
-//		BicycleConfigGroup bicycleConfigGroup = (BicycleConfigGroup) config.getModules().get(BicycleConfigGroup.GROUP_NAME);
-//      ziemke bicycle routing params
-//		bicycleConfigGroup.setMarginalUtilityOfInfrastructure_m(-0.0002);
-//		bicycleConfigGroup.setMarginalUtilityOfComfort_m(-0.0002);
-//		bicycleConfigGroup.setMarginalUtilityOfGradient_m_100m(-0.02);
-//		bicycleConfigGroup.setMaxBicycleSpeedForRouting(4.16666666);
-//  EDW PAIZEI TO NEO UTILITY FUNCTIONNNN
 	    PsafeConfigGroup psafeConfigGroup = (PsafeConfigGroup) config.getModules().get(PsafeConfigGroup.GROUP_NAME);
 	
         psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_car_m(0.44); // different beta psafes
@@ -126,8 +102,6 @@ public class RunScenarioAthens {
         psafeConfigGroup.setDmax_walk_m(0); // in meters or kilometers???
       	
       	psafeConfigGroup.setInputPsafeThreshold_m(4);
-//		bicycleConfigGroup.setMarginalUtilityOfPerceivedSafety_m(2.12331); // from bicycle config group introduce a new parameter
-		// a new variable is introduced, it is related to safety perceptions instead of infrastructure factors
 		
 		List<String> mainModeList = new ArrayList<>();
 		
@@ -176,8 +150,6 @@ public class RunScenarioAthens {
 		config.global().setNumberOfThreads(1);
 		
 		config.controller().setOverwriteFileSetting(OverwriteFileSetting.deleteDirectoryIfExists);
-		
-		
 
 		Scenario scenario = ScenarioUtils.loadScenario(config);
 
@@ -195,9 +167,9 @@ public class RunScenarioAthens {
 		
 		
 		Controler controler = new Controler(scenario);
-		// controler.addOverridingModule(new BicycleModule() );
+
 		
-//		controler.addOverridingModule(new PsafeModule()); // without that the model is running with the classical algorithms
+		controler.addOverridingModule(new PsafeModule()); // without that the model is running with the classical algorithms
 
 		controler.run();
 	}

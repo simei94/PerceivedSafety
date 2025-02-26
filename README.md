@@ -28,9 +28,9 @@ $c_{psafe}$: the perceived safety threshold (Level 4 is recommended);
 $cd_{m(q)}$: the distance threshold of mode \(m).
 
 **The [MATSim Psafe Module](https://github.com/panogjuras/Psafe) repository contains:**
-- [Psafe package](https://github.com/panogjuras/Psafe/src/main/java/org/matsim/contrib/Psafe): includes all the classes to extend the MATSim scoring so that perceived safety is considered.
-- [ScenarioAthens run package](https://github.com/panogjuras/Psafe/src/main/java/org/matsim/contrib/scenarioAthens/run): contains the public class to run simulation experiments using the ScenarioAthens.
-- [ScenarioAthens](https://github.com/panogjuras/Psafe/resources/bicycle_example): some toy scenarios developed for the city center of Athens for further experimentation.
+- [Psafe package](https://github.com/panosgjuras/Psafe/tree/main/src/main/java/org/matsim/contrib/Psafe): includes all the classes to extend the MATSim scoring so that perceived safety is considered.
+- [ScenarioAthens run package](https://github.com/panosgjuras/Psafe/tree/main/src/main/java/org/matsim/contrib/scenarioAthens/run): contains the public class to run simulation experiments using the ScenarioAthens.
+- [ScenarioAthens](https://github.com/panosgjuras/Psafe/tree/main/src/main/resources): some toy scenarios developed for the city center of Athens for further experimentation.
 
 The Module can be utilized for research and education purposes. A Getting Started document will be prepared soon.
 

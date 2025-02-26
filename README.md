@@ -34,7 +34,7 @@ $cd_{m(q)}$: the distance threshold of mode \(m).
 
 The Module can be utilized for research and education purposes. A Getting Started document will be prepared soon.
 
-It is Maven project; all dependencies are included in the (pom)[pom.xml] file. MATSim is a major dependency that should be installed.
+It is Maven project; all dependencies are included in the (pom)[https://github.com/panosgjuras/Psafe/blob/main/pom.xml] file. MATSim is a major dependency that should be installed.
 
 The tools contained in this repository were developed within various research project of [Laboratory of Transportation Engineering](http://lte.survey.ntua.gr/main/en/) of National Technical University of Athens.
 

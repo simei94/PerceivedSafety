@@ -16,25 +16,20 @@
 *                                                                         *
 * *********************************************************************** */
 
-package org.matsim.contrib.Psafe;
+package org.matsim.contrib.perceivedsafety;
 
 import com.google.inject.Inject;
 import org.matsim.api.core.v01.Scenario;
-// import org.matsim.api.core.v01.events.Event;
 import org.matsim.api.core.v01.population.Person;
-// import org.matsim.contrib.bicycle.BicycleConfigGroup.BicycleScoringType;
-// import org.matsim.core.api.experimental.events.EventsManager;
-// import org.matsim.core.events.handler.BasicEventHandler;
 import org.matsim.core.scoring.ScoringFunction;
 import org.matsim.core.scoring.ScoringFunctionFactory;
 import org.matsim.core.scoring.SumScoringFunction;
 import org.matsim.core.scoring.functions.*;
 
 /**
- * @author ptzouras
+ * ptzouras @author.
  */
-
-final class PsafeScoringFunctionFactory implements ScoringFunctionFactory {
+final class PerceivedSafetyScoringFunctionFactory implements ScoringFunctionFactory {
 
 	@Inject
 	private ScoringParametersForPerson parameters;
@@ -44,12 +39,12 @@ final class PsafeScoringFunctionFactory implements ScoringFunctionFactory {
 
 
 	@Inject
-	private PsafeConfigGroup psafeConfigGroup;
+	private PerceivedSafetyConfigGroup perceivedSafetyConfigGroup;
 
 	@Inject
-	private PsafeScoringFunctionFactory() {
+	private PerceivedSafetyScoringFunctionFactory() {
 	}
-	
+
 	@Override
 	public ScoringFunction createNewScoringFunction(Person person) {
 		SumScoringFunction sumScoringFunction = new SumScoringFunction();
@@ -59,7 +54,7 @@ final class PsafeScoringFunctionFactory implements ScoringFunctionFactory {
 		sumScoringFunction.addScoringFunction(new CharyparNagelAgentStuckScoring(params));
 		sumScoringFunction.addScoringFunction(new CharyparNagelMoneyScoring( params ));
 
-		sumScoringFunction.addScoringFunction(new PsafeNewStyleScoring(params, scenario.getNetwork(), scenario.getConfig().transit().getTransitModes(), psafeConfigGroup));
+		sumScoringFunction.addScoringFunction(new PerceivedSafetyScoring(params, scenario.getNetwork(), scenario.getConfig().transit().getTransitModes(), perceivedSafetyConfigGroup));
 
 		return sumScoringFunction;
 	}

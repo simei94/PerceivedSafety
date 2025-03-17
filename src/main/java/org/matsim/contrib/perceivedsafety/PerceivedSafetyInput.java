@@ -16,16 +16,31 @@
 *                                                                         *
 * *********************************************************************** */
 
-package org.matsim.contrib.Psafe;
+package org.matsim.contrib.perceivedsafety;
+
+import org.matsim.api.core.v01.network.Link;
+import org.matsim.api.core.v01.TransportMode;
 
 /**
- * @author ptzouras
+ * ptzouras @author.
  */
+public final class PerceivedSafetyInput {
+	private PerceivedSafetyInput() {}
 
-public final class PsafeNewAttrib {
-	public static final String PERCEIVED_SAFETY_CAR = "carpsafe";
-	public static final String PERCEIVED_SAFETY_EBIKE = "ebikepsafe";
-	public static final String PERCEIVED_SAFETY_ESCOOT = "escootpsafe";
-	public static final String PERCEIVED_SAFETY_WALK = "walkpsafe";
-	private PsafeNewAttrib() {}
+	static double computePerceivedSafetyScore(Link link, String mode, int thre) {
+		int varpsafe = 4;
+		if (mode.equals(TransportMode.car)) {
+			varpsafe = (int) link.getAttributes().getAttribute(PerceivedSafetyNewAttributes.PERCEIVED_SAFETY_CAR);
+		}
+		if (mode.equals("ebike")) {
+			varpsafe = (int) link.getAttributes().getAttribute(PerceivedSafetyNewAttributes.PERCEIVED_SAFETY_EBIKE);
+		}
+		if (mode.equals("escoot")) {
+			varpsafe = (int) link.getAttributes().getAttribute(PerceivedSafetyNewAttributes.PERCEIVED_SAFETY_ESCOOTER);
+		}
+		if (mode.equals("walk")) {
+			varpsafe = (int) link.getAttributes().getAttribute(PerceivedSafetyNewAttributes.PERCEIVED_SAFETY_WALK);
+		}
+		return(varpsafe - thre);
+	}
 }

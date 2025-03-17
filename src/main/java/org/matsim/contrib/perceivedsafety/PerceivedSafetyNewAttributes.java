@@ -16,28 +16,16 @@
 *                                                                         *
 * *********************************************************************** */
 
-package org.matsim.contrib.Psafe;
+package org.matsim.contrib.perceivedsafety;
 
 /**
- * @author ptzouras
+ * ptzouras @author.
  */
-
-import org.matsim.api.core.v01.network.Link;
-import org.matsim.api.core.v01.TransportMode;
-
-public final class PsafeInput {
-
-	static double computePsafeScore(Link link,String mode, int thre) {
-		int varpsafe = 4;
-		if (mode.equals(TransportMode.car)) {
-			varpsafe = (int)link.getAttributes().getAttribute(PsafeNewAttrib.PERCEIVED_SAFETY_CAR);}
-		if (mode.equals("ebike")) {
-			varpsafe = (int)link.getAttributes().getAttribute(PsafeNewAttrib.PERCEIVED_SAFETY_EBIKE);}
-		if (mode.equals("escoot")) {
-			varpsafe = (int)link.getAttributes().getAttribute(PsafeNewAttrib.PERCEIVED_SAFETY_ESCOOT);}
-		if (mode.equals("walk")) {
-			varpsafe = (int)link.getAttributes().getAttribute(PsafeNewAttrib.PERCEIVED_SAFETY_WALK);}
-		double score = varpsafe - thre;
-		return(score);
-	}
+public final class PerceivedSafetyNewAttributes {
+//	TODO: integrate this into ConfigGroup?!
+	public static final String PERCEIVED_SAFETY_CAR = "carPerceivedSafety";
+	public static final String PERCEIVED_SAFETY_EBIKE = "eBikePerceivedSafety";
+	public static final String PERCEIVED_SAFETY_ESCOOTER = "eScooterPerceivedSafety";
+	public static final String PERCEIVED_SAFETY_WALK = "walkPerceivedSafety";
+	private PerceivedSafetyNewAttributes() {}
 }

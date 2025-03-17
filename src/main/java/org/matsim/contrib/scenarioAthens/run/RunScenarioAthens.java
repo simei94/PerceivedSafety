@@ -25,10 +25,10 @@ import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
 
 //// new modules, new modules... PsafeChoices package.
-import org.matsim.contrib.Psafe.PsafeConfigGroup;
+import org.matsim.contrib.perceivedsafety.PerceivedSafetyConfigGroup;
 // import org.matsim.contrib.Psafe.PsafeInput;
 // import org.matsim.contrib.Psafe.PsafeNewAttrib;
-import org.matsim.contrib.Psafe.PsafeModule;
+import org.matsim.contrib.perceivedsafety.PerceivedSafetyModule;
 
 import org.matsim.core.config.groups.ReplanningConfigGroup.StrategySettings;
 import org.matsim.core.config.Config;
@@ -58,14 +58,14 @@ public class RunScenarioAthens {
 		Config config;
 		if (args.length == 1) {
 			LOG.info("A user-specified config.xml file was provided. Using it...");
-			config = ConfigUtils.loadConfig(args[0], new PsafeConfigGroup());
+			config = ConfigUtils.loadConfig(args[0], new PerceivedSafetyConfigGroup());
 			fillConfigWithBicycleStandardValues(config);
 		} else if (args.length == 0) {
 			LOG.info("No config.xml file was provided. Using 'standard' example files given in this contrib's resources folder.");
 
 			config = ConfigUtils.createConfig("ScenarioAthensEquity/");
 
-			config.addModule(new PsafeConfigGroup());
+			config.addModule(new PerceivedSafetyConfigGroup());
 			
 			fillConfigWithBicycleStandardValues(config);
 
@@ -84,24 +84,24 @@ public class RunScenarioAthens {
 	static void fillConfigWithBicycleStandardValues(Config config) {
 		config.controller().setWriteEventsInterval(1);
 
-	    PsafeConfigGroup psafeConfigGroup = (PsafeConfigGroup) config.getModules().get(PsafeConfigGroup.GROUP_NAME);
+	    PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = (PerceivedSafetyConfigGroup) config.getModules().get(PerceivedSafetyConfigGroup.GROUP_NAME);
 	
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_car_m(0.44); // different beta psafes
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_ebike_m(0.84);
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_escoot_m(0.76);
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_walk_m(0.33);
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyCarPerM(0.44); // different beta psafes
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEBikePerM(0.84);
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEScooterPerM(0.76);
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyWalkPerM(0.33);
         
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_car_m_sd(0.20);
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_ebike_m_sd(0.22);
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_escoot_m_sd(0.07);
-        psafeConfigGroup.setMarginalUtilityOfPerceivedSafety_walk_m_sd(0.17);
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyCarPerMSd(0.20);
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEBikePerMSd(0.22);
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEScooterPerMSd(0.07);
+        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyWalkPerMSd(0.17);
         
-      	psafeConfigGroup.setDmax_car_m(0); // in meters or kilometers??? if  0 then weighted average
-      	psafeConfigGroup.setDmax_ebike_m(0); // in meters or kilometers???
-      	psafeConfigGroup.setDmax_escoot_m(0); // in meters or kilometers???
-        psafeConfigGroup.setDmax_walk_m(0); // in meters or kilometers???
+      	perceivedSafetyConfigGroup.setDMaxCarPerM(0); // in meters or kilometers??? if  0 then weighted average
+      	perceivedSafetyConfigGroup.setDMaxEBikePerM(0); // in meters or kilometers???
+      	perceivedSafetyConfigGroup.setDMaxEScooterPerM(0); // in meters or kilometers???
+        perceivedSafetyConfigGroup.setDMaxWalkPerM(0); // in meters or kilometers???
       	
-      	psafeConfigGroup.setInputPsafeThreshold_m(4);
+      	perceivedSafetyConfigGroup.setInputPerceivedSafetyThresholdPerM(4);
 		
 		List<String> mainModeList = new ArrayList<>();
 		
@@ -169,7 +169,7 @@ public class RunScenarioAthens {
 		Controler controler = new Controler(scenario);
 
 		
-		controler.addOverridingModule(new PsafeModule()); // without that the model is running with the classical algorithms
+		controler.addOverridingModule(new PerceivedSafetyModule()); // without that the model is running with the classical algorithms
 
 		controler.run();
 	}

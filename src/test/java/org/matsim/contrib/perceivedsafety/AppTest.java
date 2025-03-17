@@ -1,4 +1,4 @@
-package org.matsim.contrib.Psafe;
+package org.matsim.contrib.perceivedsafety;
 
 import org.junit.jupiter.api.Test;
 

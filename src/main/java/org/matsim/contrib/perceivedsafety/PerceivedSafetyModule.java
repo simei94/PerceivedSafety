@@ -20,7 +20,17 @@ public final class PerceivedSafetyModule extends AbstractModule {
 	public void install() {
 //		TODO: check if this is done properly or if this overrides the current scoring function!
 //		Here, additional parameters should be added, but not by replacing the usual scoring function
-		bindScoringFunctionFactory().to(PerceivedSafetyScoringFunctionFactory.class).in(Singleton.class);
+//		bindScoringFunctionFactory().to(PerceivedSafetyScoringFunctionFactory.class).in(Singleton.class);
+
+//		as expected: the above binding overwrites the usual scoring function instead of adding to it. We need the following ifrastructure to re-structure this:
+//		1) PerceivedSafetyScoreEventsCreator.class which throws the scoring events. This class does what method calcLegScore of PerceivedSafetyScoring does.
+//		2) AdditionalPerceivedSafetyLinkScore interface for
+//		3) AdditionalPerceivedSafetyLinkScoreDefaultImpl which has all the marginal ut values from PerceivedSafetyScoring and a method computeLinkBasedScore which calcs the scores.
+//		This method is then called in 1) to calc the scores.
+
+//		add the scoring of perceived safety scores to the default matsim scoring
+		this.addEventHandlerBinding().to(PerceivedSafetyScoreEventsCreator.class);
+		this.bind(AdditionalPerceivedSafetyLinkScore.class).to(AdditionalPerceivedSafetyLinkScoreDefaultImpl.class);
 
 		this.installOverridingQSimModule(new AbstractQSimModule() {
 			@Inject EventsManager events;

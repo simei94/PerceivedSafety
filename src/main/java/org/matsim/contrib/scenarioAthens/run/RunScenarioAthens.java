@@ -26,8 +26,6 @@ import org.matsim.api.core.v01.TransportMode;
 
 //// new modules, new modules... PsafeChoices package.
 import org.matsim.contrib.perceivedsafety.PerceivedSafetyConfigGroup;
-// import org.matsim.contrib.Psafe.PsafeInput;
-// import org.matsim.contrib.Psafe.PsafeNewAttrib;
 import org.matsim.contrib.perceivedsafety.PerceivedSafetyModule;
 
 import org.matsim.core.config.groups.ReplanningConfigGroup.StrategySettings;
@@ -46,13 +44,16 @@ import org.matsim.vehicles.VehiclesFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-// import static org.matsim.core.config.groups.ControlerConfigGroup.RoutingAlgorithmType.FastAStarLandmarks;
 /**
  * @author ptzouras
  */
 public class RunScenarioAthens {
 	private static final Logger LOG = LogManager.getLogger(RunScenarioAthens.class);
+
+	private static final String E_BIKE = "eBike";
+	private static final String E_SCOOTER = "eScooter";
 
 	public static void main(String[] args) {
 		Config config;
@@ -84,22 +85,22 @@ public class RunScenarioAthens {
 	static void fillConfigWithBicycleStandardValues(Config config) {
 		config.controller().setWriteEventsInterval(1);
 
-	    PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = (PerceivedSafetyConfigGroup) config.getModules().get(PerceivedSafetyConfigGroup.GROUP_NAME);
-	
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyCarPerM(0.44); // different beta psafes
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEBikePerM(0.84);
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEScooterPerM(0.76);
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyWalkPerM(0.33);
-        
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyCarPerMSd(0.20);
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEBikePerMSd(0.22);
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyEScooterPerMSd(0.07);
-        perceivedSafetyConfigGroup.setMarginalUtilityOfPerceivedSafetyWalkPerMSd(0.17);
-        
-      	perceivedSafetyConfigGroup.setDMaxCarPerM(0); // in meters or kilometers??? if  0 then weighted average
-      	perceivedSafetyConfigGroup.setDMaxEBikePerM(0); // in meters or kilometers???
-      	perceivedSafetyConfigGroup.setDMaxEScooterPerM(0); // in meters or kilometers???
-        perceivedSafetyConfigGroup.setDMaxWalkPerM(0); // in meters or kilometers???
+	    PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = ConfigUtils.addOrGetModule(config, PerceivedSafetyConfigGroup.class);
+
+		Map<String, Double> mode2MarginalUtilities = Map.of(TransportMode.car, 0.44, E_BIKE,0.84,
+				E_SCOOTER,0.76, TransportMode.walk, 0.33);
+		Map<String, Double> mode2MarginalUtilitiesSd = Map.of(TransportMode.car, 0.20, E_BIKE,0.22,
+				E_SCOOTER,0.07, TransportMode.walk, 0.17);
+		Map<String, Double> mode2DMax = Map.of(TransportMode.car, 0., E_BIKE, 0.,
+				E_SCOOTER,0., TransportMode.walk, 0.);
+
+		for (Map.Entry<String, Double> e: mode2MarginalUtilities.entrySet()) {
+			PerceivedSafetyConfigGroup.PerceivedSafetyModeParams modeParams = perceivedSafetyConfigGroup.getOrCreatePerceivedSafetyModeParams(e.getKey());
+			modeParams.setMarginalUtilityOfPerceivedSafetyPerM(e.getValue());
+			modeParams.setMarginalUtilityOfPerceivedSafetyPerMSd(mode2MarginalUtilitiesSd.get(e.getKey()));
+			modeParams.setDMaxPerM(mode2DMax.get(e.getKey()));
+			perceivedSafetyConfigGroup.addModeParams(modeParams);
+		}
       	
       	perceivedSafetyConfigGroup.setInputPerceivedSafetyThresholdPerM(4);
 		
@@ -107,8 +108,8 @@ public class RunScenarioAthens {
 		
 		mainModeList.add(TransportMode.car);
 		// mainModeList.add("car");
-		mainModeList.add("ebike");
-		mainModeList.add("escoot");
+		mainModeList.add(E_BIKE);
+		mainModeList.add(E_SCOOTER);
 		// mainModeList.add("walk");
 		
 		config.qsim().setMainModes(mainModeList);

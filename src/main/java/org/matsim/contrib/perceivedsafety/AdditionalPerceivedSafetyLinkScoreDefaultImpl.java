@@ -60,6 +60,7 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
     @Inject
     AdditionalPerceivedSafetyLinkScoreDefaultImpl(Scenario scenario) {
         PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = ConfigUtils.addOrGetModule(scenario.getConfig(), PerceivedSafetyConfigGroup.class);
+//        TODO: how to translate this to ConfigGroup.ModeParams dialect?
         this.marginalUtilityOfPerceivedSafetyCar = perceivedSafetyConfigGroup.getMarginalUtilityOfPerceivedSafetyCarPerM();
         this.marginalUtilityOfPerceivedSafetyEBike = perceivedSafetyConfigGroup.getMarginalUtilityOfPerceivedSafetyEBikePerM();
         this.marginalUtilityOfPerceivedSafetyEScooter = perceivedSafetyConfigGroup.getMarginalUtilityOfPerceivedSafetyEScooterPerM();
@@ -150,6 +151,7 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
     @Override
     public double computePerceivedSafetyValueOnLink(Link link, String mode, int threshold) {
         int varPerceivedSafety = 4;
+//        TODO: change to new net attr in configGroup
         if (mode.equals(carMode)) {
             varPerceivedSafety = (int) link.getAttributes().getAttribute(PerceivedSafetyLinkAttributes.PERCEIVED_SAFETY_CAR);
         }

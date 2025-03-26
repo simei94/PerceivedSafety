@@ -18,49 +18,27 @@
 
 package org.matsim.contrib.perceivedsafety;
 
-import org.matsim.api.core.v01.TransportMode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.matsim.core.api.internal.MatsimParameters;
 import org.matsim.core.config.ReflectiveConfigGroup;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * ptzouras @author.
  */
 public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
+	private static final Logger log = LogManager.getLogger(PerceivedSafetyConfigGroup.class);
 
 	public static final String GROUP_NAME = "PerceivedSafety";
-	private static final String INPUT_PERCEIVED_SAFETY_CAR = "marginalUtilityOfPerceivedSafety_car_m";
-	private static final String INPUT_PERCEIVED_SAFETY_EBIKE = "marginalUtilityOfPerceivedSafety_EBike_m";
-	private static final String INPUT_PERCEIVED_SAFETY_ESCOOTER = "marginalUtilityOfPerceivedSafety_EScooter_m";
-	private static final String INPUT_PERCEIVED_SAFETY_WALK = "marginalUtilityOfPerceivedSafety_walk_m";
-	private static final String INPUT_PERCEIVED_SAFETY_CAR_SD = "marginalUtilityOfPerceivedSafety_car_m_sd";
-	private static final String INPUT_PERCEIVED_SAFETY_EBIKE_SD = "marginalUtilityOfPerceivedSafety_EBike_m_sd";
-	private static final String INPUT_PERCEIVED_SAFETY_ESCOOTER_SD = "marginalUtilityOfPerceivedSafety_EScooter_m_sd";
-	private static final String INPUT_PERCEIVED_SAFETY_WALK_SD = "marginalUtilityOfPerceivedSafety_walk_m_sd";
-	private static final String INPUT_DMAX_CAR = "dMax_car_m";
-	private static final String INPUT_DMAX_EBIKE = "dMax_EBike_m";
-	private static final String INPUT_DMAX_ESCOOTER = "dMax_EScooter_m";
-	private static final String INPUT_DMAX_WALK = "dMax_walk_m";
-	private static final String EBIKE_MODE = "eBikeMode";
-	private static final String ESCOOTER_MODE = "eScooterMode";
-	private static final String WALK_MODE = "walkMode";
+
 	private static final String INPUT_PERCEIVED_SAFETY_THRESHOLD = "inputPerceivedSafetyThreshold_m";
 
-	private double marginalUtilityOfPerceivedSafetyCar;
-	private double marginalUtilityOfPerceivedSafetyEBike;
-	private double marginalUtilityOfPerceivedSafetyEScooter;
-	private double marginalUtilityOfPerceivedSafetyWalk;
-	private double marginalUtilityOfPerceivedSafetyCarSd;
-	private double marginalUtilityOfPerceivedSafetyEBikeSd;
-	private double marginalUtilityOfPerceivedSafetyEScooterSd;
-	private double marginalUtilityOfPerceivedSafetyWalkSd;
-	private double dMaxCar;
-	private double dMaxEBike;
-	private double dMaxEScooter;
-	private double dMaxWalk;
 	private int inputPerceivedSafetyThreshold;
-	private String eBikeMode = "eBike";
-	private String eScooterMode = "eScooter";
 
 	public PerceivedSafetyConfigGroup(){
 		super(GROUP_NAME);
@@ -69,145 +47,8 @@ public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
 	@Override
 	public Map<String, String> getComments() {
 		Map<String,String> map = super.getComments();
-		map.put(INPUT_PERCEIVED_SAFETY_CAR, "marginalUtilityOfPerceivedSafety_car");
-		map.put(INPUT_PERCEIVED_SAFETY_EBIKE, "marginalUtilityOfPerceivedSafety_eBike");
-		map.put(INPUT_PERCEIVED_SAFETY_ESCOOTER, "marginalUtilityOfPerceivedSafety_eScooter");
-		map.put(INPUT_PERCEIVED_SAFETY_WALK, "marginalUtilityOfPerceivedSafety_walk");
-		map.put(INPUT_PERCEIVED_SAFETY_CAR_SD, "marginalUtilityOfPerceivedSafety_car_sd");
-		map.put(INPUT_DMAX_CAR, "dMax_car");
-		map.put(INPUT_DMAX_EBIKE, "dMax_EBike");
-		map.put(INPUT_DMAX_ESCOOTER, "dMax_EScooter");
 		map.put(INPUT_PERCEIVED_SAFETY_THRESHOLD, "inputPerceivedSafetyThreshold");
 		return map;
-	}
-
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_CAR)
-	public void setMarginalUtilityOfPerceivedSafetyCarPerM(final double value) {
-		// PROSTHESE MONTE CARLO SIMULATION
-		this.marginalUtilityOfPerceivedSafetyCar = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_CAR)
-	public double getMarginalUtilityOfPerceivedSafetyCarPerM() {
-		return this.marginalUtilityOfPerceivedSafetyCar;
-	}
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_EBIKE)
-	public void setMarginalUtilityOfPerceivedSafetyEBikePerM(final double value) {
-		this.marginalUtilityOfPerceivedSafetyEBike = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_EBIKE)
-	public double getMarginalUtilityOfPerceivedSafetyEBikePerM() {
-		return this.marginalUtilityOfPerceivedSafetyEBike;
-	}
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_ESCOOTER)
-	public void setMarginalUtilityOfPerceivedSafetyEScooterPerM(final double value) {
-		this.marginalUtilityOfPerceivedSafetyEScooter = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_ESCOOTER)
-	public double getMarginalUtilityOfPerceivedSafetyEScooterPerM() {
-		return this.marginalUtilityOfPerceivedSafetyEScooter;
-	}
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_WALK)
-	public void setMarginalUtilityOfPerceivedSafetyWalkPerM(final double value) {
-		this.marginalUtilityOfPerceivedSafetyWalk = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_WALK)
-	public double getMarginalUtilityOfPerceivedSafetyWalkPerM() {
-		return this.marginalUtilityOfPerceivedSafetyWalk;
-	}
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_CAR_SD)
-	public void setMarginalUtilityOfPerceivedSafetyCarPerMSd(final double value) {
-		// PROSTHESE MONTE CARLO SIMULATION
-		this.marginalUtilityOfPerceivedSafetyCarSd = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_CAR_SD)
-	public double getMarginalUtilityOfPerceivedSafetyCarPerMSd() {
-		return this.marginalUtilityOfPerceivedSafetyCarSd;
-	}
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_EBIKE_SD)
-	public void setMarginalUtilityOfPerceivedSafetyEBikePerMSd(final double value) {
-		// PROSTHESE MONTE CARLO SIMULATION
-		this.marginalUtilityOfPerceivedSafetyEBikeSd = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_EBIKE_SD)
-	public double getMarginalUtilityOfPerceivedSafetyEBikePerMSd() {
-		return this.marginalUtilityOfPerceivedSafetyEBikeSd;
-	}
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_ESCOOTER_SD)
-	public void setMarginalUtilityOfPerceivedSafetyEScooterPerMSd(final double value) {
-		// PROSTHESE MONTE CARLO SIMULATION
-		this.marginalUtilityOfPerceivedSafetyEScooterSd = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_ESCOOTER_SD)
-	public double getMarginalUtilityOfPerceivedSafetyEScooterPerMSd() {
-		return this.marginalUtilityOfPerceivedSafetyEScooterSd;
-	}
-
-	@StringSetter(INPUT_PERCEIVED_SAFETY_WALK_SD)
-	public void setMarginalUtilityOfPerceivedSafetyWalkPerMSd(final double value) {
-		// PROSTHESE MONTE CARLO SIMULATION
-		this.marginalUtilityOfPerceivedSafetyWalkSd = value;
-	}
-	@StringGetter(INPUT_PERCEIVED_SAFETY_WALK_SD)
-	public double getMarginalUtilityOfPerceivedSafetyWalkPerMSd() {
-		return this.marginalUtilityOfPerceivedSafetyWalkSd;
-	}
-
-	@StringSetter(INPUT_DMAX_CAR)
-	public void setDMaxCarPerM(final double value) {
-		this.dMaxCar = value;
-	}
-	@StringGetter(INPUT_DMAX_CAR)
-	public double getDMaxCarPerM() {
-		return this.dMaxCar;
-	}
-
-	@StringSetter(INPUT_DMAX_EBIKE)
-	public void setDMaxEBikePerM(final double value) {
-		this.dMaxEBike = value;
-	}
-	@StringGetter(INPUT_DMAX_EBIKE)
-	public double getDMaxEBikePerM() {
-		return this.dMaxEBike;
-	}
-
-	@StringSetter(INPUT_DMAX_ESCOOTER)
-	public void setDMaxEScooterPerM(final double value) {
-		this.dMaxEScooter = value;
-	}
-	@StringGetter(INPUT_DMAX_ESCOOTER)
-	public double getDMaxEScooterPerM() {
-		return this.dMaxEScooter;
-	}
-
-	@StringSetter(INPUT_DMAX_WALK)
-	public void setDMaxWalkPerM(final double value) {
-		this.dMaxWalk = value;
-	}
-	@StringGetter(INPUT_DMAX_WALK)
-	public double getDMaxWalkPerM() {
-		return this.dMaxWalk;
-	}
-
-	@StringGetter(EBIKE_MODE)
-	public String getEBikeMode() {
-		return this.eBikeMode;
-	}
-
-	@StringGetter(ESCOOTER_MODE)
-	public String getEScooterMode() {
-		return this.eScooterMode;
-	}
-
-	@StringGetter(WALK_MODE)
-	public String getWalkMode() {
-		return TransportMode.walk;
 	}
 
 	@StringSetter(INPUT_PERCEIVED_SAFETY_THRESHOLD)
@@ -217,5 +58,132 @@ public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
 	@StringGetter(INPUT_PERCEIVED_SAFETY_THRESHOLD)
 	public int getInputPerceivedSafetyThresholdPerM() {
 		return this.inputPerceivedSafetyThreshold;
+	}
+
+	public PerceivedSafetyModeParams getOrCreatePerceivedSafetyModeParams(String modeName) {
+		PerceivedSafetyModeParams modeParams = getModes().get(modeName);
+		if (modeParams == null) {
+			modeParams = new PerceivedSafetyModeParams(modeName);
+			addParameterSet(modeParams);
+		}
+		return modeParams;
+	}
+
+	public Map<String, PerceivedSafetyModeParams> getModes() {
+		@SuppressWarnings("unchecked")
+		final Collection<PerceivedSafetyModeParams> modes = (Collection<PerceivedSafetyModeParams>) getParameterSets(PerceivedSafetyModeParams.SET_TYPE);
+		final Map<String, PerceivedSafetyModeParams> map = new LinkedHashMap<>();
+
+		for (PerceivedSafetyModeParams pars : modes) {
+			if (this.isLocked()) {
+				pars.setLocked();
+			}
+			map.put(pars.getMode(), pars);
+		}
+		if (this.isLocked()) {
+			return Collections.unmodifiableMap(map);
+		} else {
+			return map;
+		}
+	}
+
+	public void addModeParams(final PerceivedSafetyModeParams params) {
+		final PerceivedSafetyModeParams previous = this.getModes().get(params.getMode());
+
+		if (previous != null) {
+			final boolean removed = removeParameterSet(previous);
+			if (!removed)
+				throw new RuntimeException("problem replacing mode params ");
+			log.info("perceived safety mode parameters for mode " + previous.getMode() + " were just overwritten.");
+		}
+		super.addParameterSet(params);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CLASSES
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class PerceivedSafetyModeParams extends ReflectiveConfigGroup implements MatsimParameters {
+		static final String SET_TYPE = "perceivedSafetyModeParams";
+		public static final String MODE_PARAM = "mode";
+
+		private static final String INPUT_PERCEIVED_SAFETY = "marginalUtilityOfPerceivedSafety_m";
+		private static final String INPUT_PERCEIVED_SAFETY_SD = "marginalUtilityOfPerceivedSafety_m_sd";
+		private static final String INPUT_DMAX = "dMax_m";
+		private static final String PERCEIVED_SAFETY_NET_ATTR_NAME = "perceivedSafetyNetworkAttributeName";
+
+
+		private String mode = null;
+		private double marginalUtilityOfPerceivedSafetyPerM = 0.;
+		private double marginalUtilityOfPerceivedSafetyPerMSd = 0.;
+		private double dMax = 0.;
+		private String networkAttributeName = null;
+
+		public PerceivedSafetyModeParams(final String mode) {
+			super(SET_TYPE);
+//			the following method sets mode attr + network attribute name for the mode
+			setMode(mode);
+		}
+
+		PerceivedSafetyModeParams() {
+			super(SET_TYPE);
+		}
+
+		@Override
+		public Map<String, String> getComments() {
+			final Map<String, String> map = super.getComments();
+//			TODO: more detailed comments!
+			map.put(INPUT_PERCEIVED_SAFETY, "marginalUtilityOfPerceivedSafety_car");
+			map.put(INPUT_PERCEIVED_SAFETY_SD, "marginalUtilityOfPerceivedSafety_car_sd");
+			map.put(INPUT_DMAX, "dMax");
+
+			return map;
+		}
+
+		@StringSetter(MODE_PARAM)
+		public PerceivedSafetyModeParams setMode(final String mode) {
+			testForLocked();
+			this.mode = mode;
+			this.networkAttributeName  = mode + "PerceivedSafety";
+			return this;
+		}
+		@StringGetter(MODE_PARAM)
+		public String getMode() {
+			return mode;
+		}
+		@StringSetter(INPUT_PERCEIVED_SAFETY)
+		public void setMarginalUtilityOfPerceivedSafetyPerM(final double value) {
+			// PROSTHESE MONTE CARLO SIMULATION
+			this.marginalUtilityOfPerceivedSafetyPerM = value;
+		}
+		@StringGetter(INPUT_PERCEIVED_SAFETY)
+		public double getMarginalUtilityOfPerceivedSafetyPerM() {
+			return this.marginalUtilityOfPerceivedSafetyPerM;
+		}
+		@StringSetter(INPUT_PERCEIVED_SAFETY_SD)
+		public void setMarginalUtilityOfPerceivedSafetyPerMSd(final double value) {
+			// PROSTHESE MONTE CARLO SIMULATION
+			this.marginalUtilityOfPerceivedSafetyPerMSd = value;
+		}
+		@StringGetter(INPUT_PERCEIVED_SAFETY_SD)
+		public double getMarginalUtilityOfPerceivedSafetyPerMSd() {
+			return this.marginalUtilityOfPerceivedSafetyPerMSd;
+		}
+		@StringSetter(INPUT_DMAX)
+		public void setDMaxPerM(final double value) {
+			this.dMax = value;
+		}
+		@StringGetter(INPUT_DMAX)
+		public double getDMaxPerM() {
+			return this.dMax;
+		}
+		@StringSetter(PERCEIVED_SAFETY_NET_ATTR_NAME)
+		public void setNetworkAttributeName(final String value) {
+			this.networkAttributeName = value;
+		}
+		@StringGetter(PERCEIVED_SAFETY_NET_ATTR_NAME)
+		public String getNetworkAttributeName() {
+			return this.networkAttributeName;
+		}
 	}
 }

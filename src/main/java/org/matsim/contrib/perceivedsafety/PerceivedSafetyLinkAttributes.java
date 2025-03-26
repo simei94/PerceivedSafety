@@ -23,9 +23,11 @@ package org.matsim.contrib.perceivedsafety;
  */
 public final class PerceivedSafetyLinkAttributes {
 //	TODO: integrate this into ConfigGroup?!
-	public static final String PERCEIVED_SAFETY_CAR = "carPerceivedSafety";
-	public static final String PERCEIVED_SAFETY_EBIKE = "eBikePerceivedSafety";
-	public static final String PERCEIVED_SAFETY_ESCOOTER = "eScooterPerceivedSafety";
-	public static final String PERCEIVED_SAFETY_WALK = "walkPerceivedSafety";
+//	this needs to be integrated into PerceivedSafetyModeParams
+//	sth like: PERCEIVED_SAFETY_NET_ATTR_NAME = mode + "PerceivedSafety";
+//	public static final String PERCEIVED_SAFETY_CAR = "carPerceivedSafety";
+//	public static final String PERCEIVED_SAFETY_EBIKE = "eBikePerceivedSafety";
+//	public static final String PERCEIVED_SAFETY_ESCOOTER = "eScooterPerceivedSafety";
+//	public static final String PERCEIVED_SAFETY_WALK = "walkPerceivedSafety";
 	private PerceivedSafetyLinkAttributes() {}
 }

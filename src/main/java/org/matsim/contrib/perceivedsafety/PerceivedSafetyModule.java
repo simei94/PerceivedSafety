@@ -18,10 +18,6 @@ public final class PerceivedSafetyModule extends AbstractModule {
 	 * installs the module.
 	 */
 	public void install() {
-//		TODO: check if this is done properly or if this overrides the current scoring function!
-//		Here, additional parameters should be added, but not by replacing the usual scoring function
-//		bindScoringFunctionFactory().to(PerceivedSafetyScoringFunctionFactory.class).in(Singleton.class);
-
 //		as expected: the above binding overwrites the usual scoring function instead of adding to it. We need the following ifrastructure to re-structure this:
 //		1) PerceivedSafetyScoreEventsCreator.class which throws the scoring events. This class does what method calcLegScore of PerceivedSafetyScoring does.
 //		2) AdditionalPerceivedSafetyLinkScore interface for

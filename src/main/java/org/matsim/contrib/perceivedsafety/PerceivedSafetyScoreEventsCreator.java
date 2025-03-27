@@ -17,6 +17,10 @@ import org.matsim.core.api.experimental.events.handler.TeleportationArrivalEvent
 import org.matsim.core.events.algorithms.Vehicle2DriverEventHandler;
 import org.matsim.core.gbl.Gbl;
 
+/**
+ * an event handler, which throws additional scoring events for perceived safety.
+ * @author simei94
+ */
 public class PerceivedSafetyScoreEventsCreator implements LinkLeaveEventHandler, VehicleEntersTrafficEventHandler,
         VehicleLeavesTrafficEventHandler, TeleportationArrivalEventHandler {
     private static final Logger log = LogManager.getLogger(PerceivedSafetyScoreEventsCreator.class);

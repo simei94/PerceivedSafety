@@ -1,7 +1,6 @@
 package org.matsim.contrib.perceivedsafety;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.core.api.experimental.events.EventsManager;
 import org.matsim.core.controler.AbstractModule;
@@ -18,13 +17,8 @@ public final class PerceivedSafetyModule extends AbstractModule {
 	 * installs the module.
 	 */
 	public void install() {
-//		as expected: the above binding overwrites the usual scoring function instead of adding to it. We need the following ifrastructure to re-structure this:
-//		1) PerceivedSafetyScoreEventsCreator.class which throws the scoring events. This class does what method calcLegScore of PerceivedSafetyScoring does.
-//		2) AdditionalPerceivedSafetyLinkScore interface for
-//		3) AdditionalPerceivedSafetyLinkScoreDefaultImpl which has all the marginal ut values from PerceivedSafetyScoring and a method computeLinkBasedScore which calcs the scores.
-//		This method is then called in 1) to calc the scores.
-
 //		add the scoring of perceived safety scores to the default matsim scoring
+//		this adds additional terms to the scoring function instead of replacing it! -sm0325
 		this.addEventHandlerBinding().to(PerceivedSafetyScoreEventsCreator.class);
 		this.bind(AdditionalPerceivedSafetyLinkScore.class).to(AdditionalPerceivedSafetyLinkScoreDefaultImpl.class);
 
@@ -32,6 +26,7 @@ public final class PerceivedSafetyModule extends AbstractModule {
 			@Inject EventsManager events;
 			@Inject Scenario scenario;
 			@Override protected void configureQSim(){
+//				TODO: what is the following needed for?? -sm0325
 				final ConfigurableQNetworkFactory factory = new ConfigurableQNetworkFactory(events, scenario);
 				bind(QNetworkFactory.class).toInstance(factory);}
 		});

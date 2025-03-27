@@ -93,8 +93,8 @@ public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
 		if (previous != null) {
 			final boolean removed = removeParameterSet(previous);
 			if (!removed)
-				throw new RuntimeException("problem replacing mode params ");
-			log.info("perceived safety mode parameters for mode " + previous.getMode() + " were just overwritten.");
+				throw new IllegalStateException("problem replacing mode params ");
+			log.warn("perceived safety mode parameters for mode {} were just overwritten.", previous.getMode());
 		}
 		super.addParameterSet(params);
 	}
@@ -103,6 +103,9 @@ public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
 	// CLASSES
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * perceived safety mode params. Built parallel to ScoringConfigGroup.ModeParams
+	 */
 	public static class PerceivedSafetyModeParams extends ReflectiveConfigGroup implements MatsimParameters {
 		static final String SET_TYPE = "perceivedSafetyModeParams";
 		public static final String MODE_PARAM = "mode";
@@ -132,10 +135,11 @@ public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
 		@Override
 		public Map<String, String> getComments() {
 			final Map<String, String> map = super.getComments();
-//			TODO: more detailed comments!
-			map.put(INPUT_PERCEIVED_SAFETY, "marginalUtilityOfPerceivedSafety_car");
-			map.put(INPUT_PERCEIVED_SAFETY_SD, "marginalUtilityOfPerceivedSafety_car_sd");
+			map.put(INPUT_PERCEIVED_SAFETY, "[utils/m] marginal utility of perceived safety per meter.");
+			map.put(INPUT_PERCEIVED_SAFETY_SD, "standard deviation of marginal utility of perceived safety per meter.");
+			//			TODO: more detailed comment!
 			map.put(INPUT_DMAX, "dMax");
+			map.put(PERCEIVED_SAFETY_NET_ATTR_NAME, "name of perceived safety link attribute.");
 
 			return map;
 		}
@@ -144,7 +148,7 @@ public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
 		public PerceivedSafetyModeParams setMode(final String mode) {
 			testForLocked();
 			this.mode = mode;
-			this.networkAttributeName  = mode + "PerceivedSafety";
+			this.networkAttributeName = mode + GROUP_NAME;
 			return this;
 		}
 		@StringGetter(MODE_PARAM)

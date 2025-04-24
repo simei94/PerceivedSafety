@@ -91,6 +91,8 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
 //        thus, the perceived safety score of walk legs only consists of the last link, which is added separately to the list of links.
 //        I think one needs to come up with an estimation for mode walk based on the travelled distance.
 
+//        idea: do analysis of walk perceived safety and save it shp file. then retrieve value when walk leg is scored.
+
 //        because of above issues: currently returns 0.
         return 0;
     }

@@ -46,29 +46,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.matsim.contrib.perceivedsafety.PerceivedSafetyUtils.*;
+
 /**
  * @author ptzouras
  */
 public class RunScenarioAthens {
 	private static final Logger LOG = LogManager.getLogger(RunScenarioAthens.class);
 
-	private static final String E_BIKE = "eBike";
-	private static final String E_SCOOTER = "eScooter";
-
 	public static void main(String[] args) {
 		Config config;
 		if (args.length == 1) {
 			LOG.info("A user-specified config.xml file was provided. Using it...");
-			config = ConfigUtils.loadConfig(args[0], new PerceivedSafetyConfigGroup());
-			fillConfigWithBicycleStandardValues(config);
+			config = ConfigUtils.loadConfig(args[0]);
+			PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = ConfigUtils.addOrGetModule(config, PerceivedSafetyConfigGroup.class);
+			fillConfigWithBicyclePerceivedSafetyDefaultValues(perceivedSafetyConfigGroup);
+			configureConfigAccordingToAthensScenario(config);
 		} else if (args.length == 0) {
 			LOG.info("No config.xml file was provided. Using 'standard' example files given in this contrib's resources folder.");
 
 			config = ConfigUtils.createConfig("ScenarioAthensEquity/");
 
-			config.addModule(new PerceivedSafetyConfigGroup());
+			PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = ConfigUtils.addOrGetModule(config, PerceivedSafetyConfigGroup.class);
 			
-			fillConfigWithBicycleStandardValues(config);
+			fillConfigWithBicyclePerceivedSafetyDefaultValues(perceivedSafetyConfigGroup);
+			configureConfigAccordingToAthensScenario(config);
 
 			config.network().setInputFile("network_psafest_scenario00.xml"); // Modify this
 			config.plans().setInputFile("cropped_plans.xml");
@@ -82,38 +84,19 @@ public class RunScenarioAthens {
 		new RunScenarioAthens().run(config);
 	}
 
-	static void fillConfigWithBicycleStandardValues(Config config) {
+	static void configureConfigAccordingToAthensScenario(Config config) {
 		config.controller().setWriteEventsInterval(1);
 
-	    PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = ConfigUtils.addOrGetModule(config, PerceivedSafetyConfigGroup.class);
-
-		Map<String, Double> mode2MarginalUtilities = Map.of(TransportMode.car, 0.44, E_BIKE,0.84,
-				E_SCOOTER,0.76, TransportMode.walk, 0.33);
-		Map<String, Double> mode2MarginalUtilitiesSd = Map.of(TransportMode.car, 0.20, E_BIKE,0.22,
-				E_SCOOTER,0.07, TransportMode.walk, 0.17);
-		Map<String, Double> mode2DMax = Map.of(TransportMode.car, 0., E_BIKE, 0.,
-				E_SCOOTER,0., TransportMode.walk, 0.);
-
-		for (Map.Entry<String, Double> e: mode2MarginalUtilities.entrySet()) {
-			PerceivedSafetyConfigGroup.PerceivedSafetyModeParams modeParams = perceivedSafetyConfigGroup.getOrCreatePerceivedSafetyModeParams(e.getKey());
-			modeParams.setMarginalUtilityOfPerceivedSafetyPerM(e.getValue());
-			modeParams.setMarginalUtilityOfPerceivedSafetyPerMSd(mode2MarginalUtilitiesSd.get(e.getKey()));
-			modeParams.setDMaxPerM(mode2DMax.get(e.getKey()));
-			perceivedSafetyConfigGroup.addModeParams(modeParams);
-		}
-      	
-      	perceivedSafetyConfigGroup.setInputPerceivedSafetyThresholdPerM(4);
-		
 		List<String> mainModeList = new ArrayList<>();
-		
+
 		mainModeList.add(TransportMode.car);
 		// mainModeList.add("car");
 		mainModeList.add(E_BIKE);
 		mainModeList.add(E_SCOOTER);
 		// mainModeList.add("walk");
-		
+
 		config.qsim().setMainModes(mainModeList);
-		
+
 		config.transit().setUseTransit(false);
 		// config.qsim().setUsingTravelTimeCheckInTeleportation(false);
 
@@ -127,22 +110,22 @@ public class RunScenarioAthens {
 		strategySettings.setWeight(0.15);
 		config.replanning().addStrategySettings(strategySettings);
 		// config.setParam("changeMode", "modes", "car,walk");
-		String[] str = {TransportMode.car, "ebike","escoot"};
+		String[] str = {TransportMode.car, E_BIKE,E_SCOOTER};
 		config.changeMode().setModes(str);
 
 		config.scoring().addActivityParams( new ActivityParams("home").setTypicalDuration(12*60*60 ) );
 		config.scoring().addActivityParams( new ActivityParams("work").setTypicalDuration(8*60*60 ) );
-		
+
 		config.scoring().addActivityParams( new ActivityParams("shop").setTypicalDuration(8*60*60 ) );
 		config.scoring().addActivityParams( new ActivityParams("other").setTypicalDuration(8*60*60 ) );
 		config.scoring().addActivityParams( new ActivityParams("education").setTypicalDuration(8*60*60 ) );
 		config.scoring().addActivityParams( new ActivityParams("recreation").setTypicalDuration(8*60*60 ) );
 
 		config.scoring().addModeParams( new ModeParams(TransportMode.car).setConstant(0.).setMarginalUtilityOfDistance(-0.000042 ).setMarginalUtilityOfTraveling(-1.8 ).setMonetaryDistanceRate(0.) );
-		config.scoring().addModeParams( new ModeParams("ebike").setConstant(0.10 ).setMarginalUtilityOfDistance(-0.000112 ).setMarginalUtilityOfTraveling(-2.4 ).setMonetaryDistanceRate(0. ) );
-		config.scoring().addModeParams( new ModeParams("escoot").setConstant(-0.41).setMarginalUtilityOfDistance(-0.0002484 ).setMarginalUtilityOfTraveling(-3.0).setMonetaryDistanceRate(0.) );
+		config.scoring().addModeParams( new ModeParams(E_BIKE).setConstant(0.10 ).setMarginalUtilityOfDistance(-0.000112 ).setMarginalUtilityOfTraveling(-2.4 ).setMonetaryDistanceRate(0. ) );
+		config.scoring().addModeParams( new ModeParams(E_SCOOTER).setConstant(-0.41).setMarginalUtilityOfDistance(-0.0002484 ).setMarginalUtilityOfTraveling(-3.0).setMonetaryDistanceRate(0.) );
 		// config.planCalcScore().addModeParams( new ModeParams("walk").setConstant(-0.35).setMarginalUtilityOfDistance(0.0).setMarginalUtilityOfTraveling(-2.5).setMonetaryDistanceRate(0.) );
-		
+
 		config.routing().setNetworkModes(mainModeList);
 		config.routing().setRoutingRandomness(3.);
 	}
@@ -162,8 +145,8 @@ public class RunScenarioAthens {
 		
 		// scenario.getVehicles().addVehicleType( vf.createVehicleType(Id.create(TransportMode.car, VehicleType.class ) ) );
 		scenario.getVehicles().addVehicleType( vf.createVehicleType(Id.create(TransportMode.car, VehicleType.class ) ).setMaximumVelocity(25.0 ).setPcuEquivalents(1.0 ) );
-		scenario.getVehicles().addVehicleType( vf.createVehicleType(Id.create("ebike", VehicleType.class ) ).setMaximumVelocity(6.95 ).setPcuEquivalents(0.50 ) );
-		scenario.getVehicles().addVehicleType( vf.createVehicleType(Id.create("escoot", VehicleType.class ) ).setMaximumVelocity(6.95 ).setPcuEquivalents(0.25 ) );
+		scenario.getVehicles().addVehicleType( vf.createVehicleType(Id.create(E_BIKE, VehicleType.class ) ).setMaximumVelocity(6.95 ).setPcuEquivalents(0.50 ) );
+		scenario.getVehicles().addVehicleType( vf.createVehicleType(Id.create(E_SCOOTER, VehicleType.class ) ).setMaximumVelocity(6.95 ).setPcuEquivalents(0.25 ) );
 		// scenario.getVehicles().addVehicleType( vf.createVehicleType(Id.create("walk", VehicleType.class ) ).setMaximumVelocity(1.38 ).setPcuEquivalents(0.125 ) );
 		
 		

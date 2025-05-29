@@ -32,7 +32,8 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
     // while dmax is set to one
     private double dMax = 1.;
 
-    SplittableRandom generator = new SplittableRandom();
+//    TODO: talk to Panagiotis about the seed. is this a good idea or do have to set this without a seed = not deterministic?
+    SplittableRandom generator = new SplittableRandom(42);
     private final Vehicles vehicles;
     private final PerceivedSafetyConfigGroup perceivedSafetyConfigGroup;
 

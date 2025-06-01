@@ -4,19 +4,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.matsim.api.core.v01.Id;
+import org.matsim.api.core.v01.TransportMode;
 import org.matsim.api.core.v01.population.*;
 import org.matsim.application.ApplicationUtils;
 import org.matsim.core.config.Config;
 import org.matsim.core.config.ConfigUtils;
+import org.matsim.core.config.groups.QSimConfigGroup;
+import org.matsim.core.config.groups.ScoringConfigGroup;
 import org.matsim.core.controler.Controler;
 import org.matsim.core.population.PopulationUtils;
 import org.matsim.core.scenario.MutableScenario;
 import org.matsim.core.scenario.ScenarioUtils;
+import org.matsim.core.utils.io.IOUtils;
 import org.matsim.examples.ExamplesUtils;
 import org.matsim.testcases.MatsimTestUtils;
+import org.matsim.vehicles.VehicleType;
+import org.matsim.vehicles.VehicleUtils;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.matsim.contrib.perceivedsafety.PerceivedSafetyUtils.E_BIKE;
@@ -31,19 +41,39 @@ public class PerceivedSafetyScoringTest {
 
     @Test
     public void testPerceivedSafetyScoring() {
-//        TODO: steps
-//        create sample person in sample population
-//        get "expected" value from old approach.
-//        run sim and compare new score to old score, where new score = new sccore!!
-//        run sim for each different mode?!
+        Map<String, Double> expectedLegScores = new HashMap<>();
+        expectedLegScores.put(E_BIKE, -3.2736575082122163);
+        expectedLegScores.put(E_SCOOTER, -2.5198001162493413);
+        expectedLegScores.put(TransportMode.car, -2.005143189283833);
 
-        for (String mode : Set.of(E_BIKE, E_SCOOTER)) {
-            Path context = Paths.get(ExamplesUtils.getTestScenarioURL("equil").toString());
+        Map<String, Double> actualLegScores = new HashMap<>();
 
-            Config config = ConfigUtils.loadConfig(context.resolve("config.xml").toString());
+        for (Map.Entry<String, Double> e : expectedLegScores.entrySet()) {
+            String mode = e.getKey();
+            URL context = ExamplesUtils.getTestScenarioURL("equil");
+            Config config = ConfigUtils.loadConfig(IOUtils.extendUrl(context, "config.xml"));
+
+            Path outputPath = Paths.get(utils.getOutputDirectory()).resolve(mode);
 
 //        general config settings
-            config.controller().setOutputDirectory(utils.getOutputDirectory());
+            config.controller().setOutputDirectory(outputPath.toString());
+            config.controller().setLastIteration(0);
+            config.controller().setRunId("test");
+
+            Set<String> mainModes = new HashSet<>(Set.of(mode));
+            mainModes.addAll(config.qsim().getMainModes());
+            config.qsim().setMainModes(mainModes);
+
+            config.qsim().setVehiclesSource(QSimConfigGroup.VehiclesSource.modeVehicleTypesFromVehiclesData);
+
+            Set<String> networkModes = new HashSet<>(Set.of(mode));
+            networkModes.addAll(config.routing().getNetworkModes());
+            config.routing().setNetworkModes(networkModes);
+
+            //            set all scoring params to 0 such that we only see the score change caused through perceived safety
+            ScoringConfigGroup.ModeParams modeParams = new ScoringConfigGroup.ModeParams(mode);
+            modeParams.setMarginalUtilityOfTraveling(0.);
+            config.scoring().addModeParams(modeParams);
             config.scoring().setWriteExperiencedPlans(true);
             config.scoring().getActivityParams()
                     .forEach(a -> a.setScoringThisActivityAtAll(false));
@@ -52,29 +82,45 @@ public class PerceivedSafetyScoringTest {
             PerceivedSafetyConfigGroup perceivedSafetyConfigGroup = ConfigUtils.addOrGetModule(config, PerceivedSafetyConfigGroup.class);
             PerceivedSafetyUtils.fillConfigWithBicyclePerceivedSafetyDefaultValues(perceivedSafetyConfigGroup);
 
-//        TODO: not sure if this works, we may have to run ScenarioUtils.createMutableScenario and then load it afterwards?
             MutableScenario scenario = (MutableScenario) ScenarioUtils.loadScenario(config);
             createAndAddTestPopulation(scenario, mode);
 
 //            add mode to network links
             scenario.getNetwork().getLinks().values()
                     .forEach(l -> {
-                        Set<String> allowedModes = new java.util.HashSet<>(Set.of(mode));
+//                        add mode as allowed mode
+                        Set<String> allowedModes = new java.util.HashSet<>();
+                        allowedModes.add(mode);
                         allowedModes.addAll(l.getAllowedModes());
                         l.setAllowedModes(allowedModes);
+
+//                        add perceived safety link attr to link
+                        l.getAttributes().putAttribute(mode + "PerceivedSafety", 1);
                     });
+
+//          create veh type for given mode(s)
+            scenario.getConfig().routing().getNetworkModes()
+                    .forEach(m -> {
+                        VehicleType vehicleType = VehicleUtils.createVehicleType(Id.create(m, VehicleType.class));
+                        vehicleType.setNetworkMode(m);
+                        scenario.getVehicles().addVehicleType(vehicleType);
+                    });
+
 
             Controler controler = new Controler(scenario);
             controler.addOverridingModule(new PerceivedSafetyModule());
             controler.run();
 
 //            read experienced plans and get score of plan
-            String experiencedPlansPath = ApplicationUtils.globFile(Paths.get(utils.getOutputDirectory()), "*output_experienced_plans.xml.gz").toString();
+            String experiencedPlansPath = ApplicationUtils.globFile(outputPath, "*output_experienced_plans.xml.gz").toString();
             Population experiencedPlans = PopulationUtils.readPopulation(experiencedPlansPath);
 
 //            score of plan should only consist of leg scores as all act types are set to "dont score"
-//            TODO set experienced value
-            Assertions.assertEquals("TODO", experiencedPlans.getPersons().get(PERSON_ID).getSelectedPlan().getScore());
+            actualLegScores.put(e.getKey(), experiencedPlans.getPersons().get(PERSON_ID).getSelectedPlan().getScore());
+        }
+
+        for (Map.Entry<String, Double> e : actualLegScores.entrySet()) {
+            Assertions.assertEquals(expectedLegScores.get(e.getKey()), e.getValue());
         }
     }
 
@@ -85,7 +131,6 @@ public class PerceivedSafetyScoringTest {
         Activity home = fac.createActivityFromLinkId("h", Id.createLinkId("20"));
         home.setEndTime(8 * 3600.);
         Leg leg = fac.createLeg(mode);
-//        TODO: ideally the agent only travels 1 link. maybe we have to set the destination act (below) to link 20, too?!
         Activity work = fac.createActivityFromLinkId("w", Id.createLinkId("21"));
         work.setEndTime(9 * 3600.);
 
@@ -97,7 +142,6 @@ public class PerceivedSafetyScoringTest {
         Person person = fac.createPerson(PERSON_ID);
         person.addPlan(plan);
         person.setSelectedPlan(plan);
-//        TODO: maybe set some person attrs if needed?
 
         pop.addPerson(person);
         scenario.setPopulation(pop);

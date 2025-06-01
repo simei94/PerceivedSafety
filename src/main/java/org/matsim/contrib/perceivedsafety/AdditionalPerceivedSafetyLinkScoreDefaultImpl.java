@@ -1,7 +1,6 @@
 package org.matsim.contrib.perceivedsafety;
 
 import com.google.inject.Inject;
-import jakarta.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.matsim.api.core.v01.Id;
@@ -11,7 +10,7 @@ import org.matsim.core.config.ConfigUtils;
 import org.matsim.vehicles.Vehicle;
 import org.matsim.vehicles.Vehicles;
 
-import java.util.SplittableRandom;
+import java.util.Random;
 
 /**
  * Default Implementation of scoring algorithm for perceived safety. The old approach with class PerceivedSafetyScoring
@@ -33,7 +32,7 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
     private double dMax = 1.;
 
 //    TODO: talk to Panagiotis about the seed. is this a good idea or do have to set this without a seed = not deterministic?
-    SplittableRandom generator = new SplittableRandom(42);
+    Random generator = new Random(42);
     private final Vehicles vehicles;
     private final PerceivedSafetyConfigGroup perceivedSafetyConfigGroup;
 
@@ -48,7 +47,7 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
     }
 
     @Override
-    public double computeLinkBasedScore(@NotNull Link link, @NotNull Id<Vehicle> vehicleId) {
+    public double computeLinkBasedScore(Link link, Id<Vehicle> vehicleId) {
         if (vehicles.getVehicles().get(vehicleId) == null) {
             log.fatal("Vehicle with id {} on link {} is not linked to any vehicle of the scenario (null). This should never happen! Aborting!", vehicleId, link.getId());
             throw new NullPointerException();
@@ -56,7 +55,14 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
 
         String currentMode = vehicles.getVehicles().get(vehicleId).getType().getNetworkMode();
 
+        if (perceivedSafetyConfigGroup.getModes().get(currentMode) == null) {
+            log.fatal("Trying to compute perceived safety score for mode {}," +
+                    "but there are no perceived safety parameters for this mode in {}. Aborting!", currentMode, perceivedSafetyConfigGroup.getName());
+            throw new NullPointerException();
+        }
+
         PerceivedSafetyConfigGroup.PerceivedSafetyModeParams params = perceivedSafetyConfigGroup.getModes().get(currentMode);
+
         // set mean beta_psafe, depends on the transport mode
         betaPerceivedSafety = params.getMarginalUtilityOfPerceivedSafetyPerM();
         // set sd beta_psafe, depends on the transport mode
@@ -105,6 +111,11 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
 
         if (link.getAttributes().getAttribute(perceivedSafetyConfigGroup.getModes().get(mode).getNetworkAttributeName()) != null) {
             varPerceivedSafety = (int) link.getAttributes().getAttribute(perceivedSafetyConfigGroup.getModes().get(mode).getNetworkAttributeName());
+        } else {
+//            TODO: talk to Panagiotis if this is too harsh. We also could just give back 0 as perceivedSafetyScore, but maybe with a log.info at the least
+            log.fatal("Link {} has no perceived safety attribute {}! The perceived safety score for mode {} cannot be calculated! Aborting!", link.getId(),
+                    perceivedSafetyConfigGroup.getModes().get(mode).getNetworkAttributeName(),mode);
+            throw new NullPointerException();
         }
         return (varPerceivedSafety - threshold);
     }

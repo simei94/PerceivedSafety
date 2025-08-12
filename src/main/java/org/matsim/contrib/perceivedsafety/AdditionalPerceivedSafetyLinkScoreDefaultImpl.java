@@ -31,7 +31,6 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
     // while dmax is set to one
     private double dMax = 1.;
 
-//    TODO: talk to Panagiotis about the seed. is this a good idea or do have to set this without a seed = not deterministic?
     Random generator = new Random(42);
     private final Vehicles vehicles;
     private final PerceivedSafetyConfigGroup perceivedSafetyConfigGroup;
@@ -94,7 +93,7 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
         sdPerceivedSafety = params.getMarginalUtilityOfPerceivedSafetyPerMSd();
         dMax = params.getDMaxPerM();
 
-//        TODO: the current scoring of walk/teleported modes is not working. a list of links is retrieved from the leg, which is 0 for teleported legs.
+//        the current scoring of walk/teleported modes is not working. a list of links is retrieved from the leg, which is 0 for teleported legs.
 //        thus, the perceived safety score of walk legs only consists of the last link, which is added separately to the list of links.
 //        I think one needs to come up with an estimation for mode walk based on the travelled distance.
 
@@ -112,7 +111,8 @@ public class AdditionalPerceivedSafetyLinkScoreDefaultImpl implements Additional
         if (link.getAttributes().getAttribute(perceivedSafetyConfigGroup.getModes().get(mode).getNetworkAttributeName()) != null) {
             varPerceivedSafety = (int) link.getAttributes().getAttribute(perceivedSafetyConfigGroup.getModes().get(mode).getNetworkAttributeName());
         } else {
-//            TODO: talk to Panagiotis if this is too harsh. We also could just give back 0 as perceivedSafetyScore, but maybe with a log.info at the least
+//            maybe this is too harsh. We also could just give back 0 as perceivedSafetyScore, but maybe with a log.info at the least.
+//            For now, we will abort. -sm0825
             log.fatal("Link {} has no perceived safety attribute {}! The perceived safety score for mode {} cannot be calculated! Aborting!", link.getId(),
                     perceivedSafetyConfigGroup.getModes().get(mode).getNetworkAttributeName(),mode);
             throw new NullPointerException();

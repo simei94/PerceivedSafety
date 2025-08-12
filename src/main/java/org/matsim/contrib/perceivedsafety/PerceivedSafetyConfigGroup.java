@@ -137,8 +137,9 @@ public final class PerceivedSafetyConfigGroup extends ReflectiveConfigGroup {
 			final Map<String, String> map = super.getComments();
 			map.put(INPUT_PERCEIVED_SAFETY, "[utils/m] marginal utility of perceived safety per meter.");
 			map.put(INPUT_PERCEIVED_SAFETY_SD, "standard deviation of marginal utility of perceived safety per meter.");
-			//			TODO: more detailed comment!
-			map.put(INPUT_DMAX, "dMax");
+			map.put(INPUT_DMAX, "[m] The maximum relevant length for perceived safety calculation of a given mode. dMax is used to normalize the distanceBasedPerceivedSafety." +
+					"This is useful e.g. for links with low perceived safety in the first 50m of a link of length=200m. It is assumed that travelling the whole 200m does not feel 4x as unsafe as the first 50m." +
+					"The effect of distance based perceived safety saturates.");
 			map.put(PERCEIVED_SAFETY_NET_ATTR_NAME, "name of perceived safety link attribute.");
 
 			return map;
